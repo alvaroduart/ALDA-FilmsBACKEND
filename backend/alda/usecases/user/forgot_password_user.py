@@ -4,17 +4,13 @@ from alda.domain.value_objects.email_vo import Email
 from alda.domain.value_objects.password import Password
 
 
-class LoginUserUseCase:
+class ForgotPasswordUseCase:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
-    def execute(self, email: Email, password: Password) -> User:
+    def execute(self, email: Email) -> None:
         user = self.repository.get_by_email(email)
         if not user:
-            raise ValueError("User not found")
-        
-        if user.password.value() != password.value():
-            raise ValueError("Invalid password")
-        
-        return user
+            raise ValueError("User with this email does not exist")
+        self.repository.forgot_password(email)
 
